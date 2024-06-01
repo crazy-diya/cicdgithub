@@ -43,10 +43,10 @@ jobs:
       - name: Install dependencies (android)
         run: flutter pub get
 
-      - name: Install dependencies (iOS)
-        run: |
-          cd ios
-          pod install
+#      - name: Install dependencies (iOS)
+#        run: |
+#          cd ios
+#          pod install
 
   #6 Flutter Test
       - name: App Issues Analyzing
