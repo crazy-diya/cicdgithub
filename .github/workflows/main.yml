@@ -25,9 +25,6 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
           cache: 'gradle'
-          cache-dependency-path: | # optional
-            sub-project/*.gradle*
-            sub-project/**/gradle-wrapper.properties
 
   # step 3 - setup Flutter
       - name: Set up Flutter
