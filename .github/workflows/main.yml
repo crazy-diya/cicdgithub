@@ -1,0 +1,57 @@
+name: "Build & Release"
+
+on:
+#  push:
+#    branches:
+#      - development
+
+  pull_request:
+    branches:
+      - production
+
+jobs:
+  build:
+    name: build & release
+    runs-on: macos-latest
+
+    steps:
+  # step 1 - checkout repo
+      - name: Checkout
+        uses: actions/checkout@v4.1.6
+
+  # step 2 - setup Java
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'gradle'
+          cache-dependency-path: | # optional
+            sub-project/*.gradle*
+            sub-project/**/gradle-wrapper.properties
+
+  # step 3 - setup Flutter
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+          # optional parameters follow
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:" # optional, change this to force refresh cache
+          cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:" # optional, change this to specify the cache path
+          pub-cache-key: "flutter-pub:os:-:channel:-:version:-:arch:-:hash:" # optional, change this to force refresh cache of dart pub get dependencies
+          pub-cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:" # optional, change this to specify the cache path
+      - run: flutter --version
+
+  # step 4 - install dependencies
+      - name: Install dependencies (android)
+        run: flutter pub get
+
+      - name: Install dependencies (iOS)
+        run: |
+          cd ios
+          pod install
+
+  #6 Flutter Test
+      - name: App Issues Analyzing
+        run: flutter analyze
+
