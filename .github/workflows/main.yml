@@ -1,13 +1,13 @@
 name: "Build & Release"
 
 on:
-#  push:
+  push:
+    branches:
+      - main
+
+#  pull_request:
 #    branches:
 #      - development
-
-  pull_request:
-    branches:
-      - development
 
 jobs:
   build:
