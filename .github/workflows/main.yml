@@ -22,100 +22,100 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4.1.6
 
-  # step 2 - setup Java
-      - uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: '11'
-          cache: 'gradle'
-
-  # step 3 - setup Flutter
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-          cache: true
-          # optional parameters follow
-          cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:" # optional, change this to force refresh cache
-          cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:" # optional, change this to specify the cache path
-          pub-cache-key: "flutter-pub:os:-:channel:-:version:-:arch:-:hash:" # optional, change this to force refresh cache of dart pub get dependencies
-          pub-cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:" # optional, change this to specify the cache path
-      - run: flutter --version
-
-  # step 4 - install dependencies (Android)
-      - name: Install dependencies (android)
-        run: flutter pub get
-
-  # step 5 - install dependencies (iOS)
-      - name: Install dependencies (iOS)
-        run: |
-          cd ios
-          pod install
-
-  # step 6 - Flutter Test
-      - name: App Issues Analyzing
-        run: flutter analyze
-
-  # step 7 - Run Flutter App
-      - name: Flutter App Unit Testing
-        run: flutter test
-
-  # step 8 - Build APK file
-      - name: Build APK
-        run: flutter build apk --split-per-abi --release
-
-  # step 9 - Build AAB file
-      - name: Build AppBundle
-        run: flutter build appbundle --split-debug-info --release
-
-  # step 10 - Build IPA file
-      - name: Build IPA
-        run: flutter build ipa --release --no-codesign
-      - name: Compress Archives and IPAs
-        run: |
-          cd build
-          tar -czf ios_build.tar.gz ios
-
-  # step 11 - Upload Artifact
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4.1.0
-        with:
-          name: Releases (APK,AAB,IPA)
-          path: |
-            build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
-            build/app/outputs/bundle/release/app-release.aab
-            build/ios_build.tar.gz
-          #              README.md
-
-  # step 12 - Retrieve the Current App Version from pubspec.yaml file
-      - name: Get App version Number
-        id: get_version
-        run: echo "VERSION=$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)" >> $GITHUB_OUTPUT
-#          run: echo "::set-output name=VERSION::$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)"
-#          run: |
-#            echo ::set-output name=VERSION::$(grep "version:" pubspec.yaml | awk '{print $2}')
-
-  # step 13 - Create Release with adding app version number to the release repo
-      - name: Create Releases with new Release Number
-        uses: ncipollo/release-action@v1
-        with:
-          artifacts: "build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk,build/app/outputs/bundle/release/app-release.aab,build/ios_build.tar.gz"
-          tag: v${{ steps.get_version.outputs.VERSION }}
-          name: v${{ steps.get_version.outputs.VERSION }}
-#            tag: v1.0.${{ github.run_number}}
-            #token: ${{ secrets.TOKEN }}
-          draft: false
-          prerelease: false
-          bodyFile: "README.md"
-
-  # step - 14 Upload Artifact to the google Drive
-      - name: Upload Github Artifacts TO Google Drive
-        uses: Jumbo810/Upload_Github_Artifacts_TO_GDrive@v2.2.2
-        with:
-          target: build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
-          credentials: ${{ secrets.SERVICE_ACCOUNT_CREDENTIALS }}
-          parent_folder_id: 1XSqWujNJhRqfKBSgh6IfhzuU_1lohshr
-          child_folder: v${{ steps.get_version.outputs.VERSION }}
+#  # step 2 - setup Java
+#      - uses: actions/setup-java@v4
+#        with:
+#          distribution: 'zulu'
+#          java-version: '11'
+#          cache: 'gradle'
+#
+#  # step 3 - setup Flutter
+#      - name: Set up Flutter
+#        uses: subosito/flutter-action@v2
+#        with:
+#          channel: stable
+#          cache: true
+#          # optional parameters follow
+#          cache-key: "flutter-:os:-:channel:-:version:-:arch:-:hash:" # optional, change this to force refresh cache
+#          cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:" # optional, change this to specify the cache path
+#          pub-cache-key: "flutter-pub:os:-:channel:-:version:-:arch:-:hash:" # optional, change this to force refresh cache of dart pub get dependencies
+#          pub-cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:" # optional, change this to specify the cache path
+#      - run: flutter --version
+#
+#  # step 4 - install dependencies (Android)
+#      - name: Install dependencies (android)
+#        run: flutter pub get
+#
+#  # step 5 - install dependencies (iOS)
+#      - name: Install dependencies (iOS)
+#        run: |
+#          cd ios
+#          pod install
+#
+#  # step 6 - Flutter Test
+#      - name: App Issues Analyzing
+#        run: flutter analyze
+#
+#  # step 7 - Run Flutter App
+#      - name: Flutter App Unit Testing
+#        run: flutter test
+#
+#  # step 8 - Build APK file
+#      - name: Build APK
+#        run: flutter build apk --split-per-abi --release
+#
+#  # step 9 - Build AAB file
+#      - name: Build AppBundle
+#        run: flutter build appbundle --split-debug-info --release
+#
+#  # step 10 - Build IPA file
+#      - name: Build IPA
+#        run: flutter build ipa --release --no-codesign
+#      - name: Compress Archives and IPAs
+#        run: |
+#          cd build
+#          tar -czf ios_build.tar.gz ios
+#
+#  # step 11 - Upload Artifact
+#      - name: Upload Artifact
+#        uses: actions/upload-artifact@v4.1.0
+#        with:
+#          name: Releases (APK,AAB,IPA)
+#          path: |
+#            build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
+#            build/app/outputs/bundle/release/app-release.aab
+#            build/ios_build.tar.gz
+#          #              README.md
+#
+#  # step 12 - Retrieve the Current App Version from pubspec.yaml file
+#      - name: Get App version Number
+#        id: get_version
+#        run: echo "VERSION=$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)" >> $GITHUB_OUTPUT
+##          run: echo "::set-output name=VERSION::$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)"
+##          run: |
+##            echo ::set-output name=VERSION::$(grep "version:" pubspec.yaml | awk '{print $2}')
+#
+#  # step 13 - Create Release with adding app version number to the release repo
+#      - name: Create Releases with new Release Number
+#        uses: ncipollo/release-action@v1
+#        with:
+#          artifacts: "build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk,build/app/outputs/bundle/release/app-release.aab,build/ios_build.tar.gz"
+#          tag: v${{ steps.get_version.outputs.VERSION }}
+#          name: v${{ steps.get_version.outputs.VERSION }}
+##            tag: v1.0.${{ github.run_number}}
+#            #token: ${{ secrets.TOKEN }}
+#          draft: false
+#          prerelease: false
+#          bodyFile: "README.md"
+#
+#  # step - 14 Upload Artifact to the google Drive
+#      - name: Upload Github Artifacts TO Google Drive
+#        uses: Jumbo810/Upload_Github_Artifacts_TO_GDrive@v2.2.2
+#        with:
+#          target: build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
+#          credentials: ${{ secrets.SERVICE_ACCOUNT_CREDENTIALS }}
+#          parent_folder_id: 1XSqWujNJhRqfKBSgh6IfhzuU_1lohshr
+#          child_folder: v${{ steps.get_version.outputs.VERSION }}
 
   # step - 15 Send mail to the QA Team
       - name: Send E-Mail to QA team with release note
