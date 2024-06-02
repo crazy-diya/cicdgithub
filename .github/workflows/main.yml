@@ -107,3 +107,15 @@ jobs:
           draft: false
           prerelease: false
           bodyFile: "README.md"
+
+  # step - 14 Upload Artifact to the google Drive
+      - name: Upload Github Artifacts TO Google Drive
+        uses: Jumbo810/Upload_Github_Artifacts_TO_GDrive@v2.2.2
+        with:
+          target: build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
+          credentials: ${{ secrets.SERVICE_ACCOUNT_CREDENTIALS }}
+          parent_folder_id: 1XSqWujNJhRqfKBSgh6IfhzuU_1lohshr
+          child_folder: v${{ steps.get_version.outputs.VERSION }}
+
+
+
