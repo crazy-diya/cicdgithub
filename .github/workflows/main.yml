@@ -10,7 +10,7 @@ on:
 #      - development
 
 jobs:
-  build & release:
+  build and release:
     name: build & release
     runs-on: macos-latest
 
