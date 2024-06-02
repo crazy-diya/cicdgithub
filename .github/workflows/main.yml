@@ -117,5 +117,26 @@ jobs:
           parent_folder_id: 1XSqWujNJhRqfKBSgh6IfhzuU_1lohshr
           child_folder: v${{ steps.get_version.outputs.VERSION }}
 
+  # step - 15 Send mail to the QA Team
+      - name: Send E-Mail to QA team with release note
+        if: always()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.MAIL_APP_USERNAME }}
+          password: ${{ secrets.MAIL_APP_PASSWORD }}
+          subject: Release for the QA Testing
+          to: ${{ vars.TO_MAIL }}
+          cc: ${{ vars.CC_MAILS }}
+          from: ${{ vars.FROM_NAME }}
+#            body: Build job of ${{github.repository}} completed successfully!
+          html_body: file://README.md
+          convert_markdown: true # Writing format show in mail same as.
+
+
+#  GithubCICD1
+#  loqg bvom qrkd duox
 
 
