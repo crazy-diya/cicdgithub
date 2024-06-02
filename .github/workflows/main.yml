@@ -110,6 +110,7 @@ jobs:
 
   # step - 14 Upload Artifact to the google Drive
       - name: Upload Github Artifacts TO Google Drive
+        id: upload_artifact
         uses: Jumbo810/Upload_Github_Artifacts_TO_GDrive@v2.2.2
         with:
           target: build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
@@ -117,7 +118,14 @@ jobs:
           parent_folder_id: 1XSqWujNJhRqfKBSgh6IfhzuU_1lohshr
           child_folder: v${{ steps.get_version.outputs.VERSION }}
 
-  # step - 15 Send mail to the QA Team
+      - name: Get Google Drive file link
+        id: get_gdrive_link
+        run: |
+          FILE_ID=$(jq -r '.id' <<< ${{ steps.upload_artifact.outputs }})
+          echo "::set-output name=GDRIVE_LINK::https://drive.google.com/file/d/$FILE_ID/view"
+      
+
+      # step - 15 Send mail to the QA Team
       - name: Send E-Mail to QA team with release note
         if: always()
         uses: dawidd6/action-send-mail@v3
