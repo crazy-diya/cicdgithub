@@ -22,8 +22,8 @@ jobs:
   # step 2 - setup Java
       - uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '21'
+          distribution: 'zulu'
+          java-version: '11'
           cache: 'gradle'
 
   # step 3 - setup Flutter
