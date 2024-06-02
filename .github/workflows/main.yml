@@ -135,8 +135,3 @@ jobs:
           html_body: file://README.md
           convert_markdown: true # Writing format show in mail same as.
 
-
-#  GithubCICD1
-#  loqg bvom qrkd duox
-
-
