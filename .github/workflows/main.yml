@@ -10,7 +10,7 @@ on:
 #      - development
 
 jobs:
-  build:
+  build & release:
     name: build & release
     runs-on: macos-latest
 
@@ -39,16 +39,68 @@ jobs:
           pub-cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:" # optional, change this to specify the cache path
       - run: flutter --version
 
-  # step 4 - install dependencies
+  # step 4 - install dependencies (Android)
       - name: Install dependencies (android)
         run: flutter pub get
 
-#      - name: Install dependencies (iOS)
-#        run: |
-#          cd ios
-#          pod install
+  # step 5 - install dependencies (iOS)
+      - name: Install dependencies (iOS)
+        run: |
+          cd ios
+          pod install
 
-  #6 Flutter Test
+  # step 6 - Flutter Test
       - name: App Issues Analyzing
         run: flutter analyze
 
+  # step 7 - Run Flutter App
+      - name: Flutter App Unit Testing
+        run: flutter test
+
+  # step 8 - Build APK file
+      - name: Build APK
+        run: flutter build apk --split-per-abi --release
+
+  # step 9 - Build AAB file
+      - name: Build AppBundle
+        run: flutter build appbundle --split-debug-info --release
+
+  # step 10 - Build IPA file
+      - name: Build IPA
+        run: flutter build ipa --release --no-codesign
+      - name: Compress Archives and IPAs
+        run: |
+          cd build
+          tar -czf ios_build.tar.gz ios
+
+  # step 11 - Upload Artifact
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4.1.0
+        with:
+          name: Releases (APK,AAB,IPA)
+          path: |
+            build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
+            build/app/outputs/bundle/release/app-release.aab
+            build/ios_build.tar.gz
+          #              README.md
+
+  # step 12 - Retrieve the Current App Version from pubspec.yaml file
+      - name: Get App version Number
+        id: get_version
+        run: echo "VERSION=$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)" >> $GITHUB_OUTPUT
+#          run: echo "::set-output name=VERSION::$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)"
+#          run: |
+#            echo ::set-output name=VERSION::$(grep "version:" pubspec.yaml | awk '{print $2}')
+
+  # step 13 - Create Release with adding app version number to the release repo
+      - name: Create Releases with new Release Number
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk,build/app/outputs/bundle/release/app-release.aab,build/ios_build.tar.gz"
+          tag: v${{ steps.get_version.outputs.VERSION }}
+          name: v${{ steps.get_version.outputs.VERSION }}
+#            tag: v1.0.${{ github.run_number}}
+            #token: ${{ secrets.TOKEN }}
+          draft: false
+          prerelease: false
+          bodyFile: "README.md"
