@@ -133,5 +133,5 @@ jobs:
           from: ${{ vars.FROM_NAME }}
 #            body: Build job of ${{github.repository}} completed successfully!
           html_body: file://README.md
-          convert_markdown: true # Writing format show in mail same as.
+          convert_markdown: true # Writing format show in mail same as
 
