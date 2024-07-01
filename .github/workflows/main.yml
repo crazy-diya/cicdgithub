@@ -10,7 +10,7 @@ on:
 #      - development
 
 env:
-  PROPERTIES_PATH: "././android/key.properties"
+  PROPERTIES_PATH: ./android/key.properties
 
 jobs:
   build_and_release:
@@ -74,10 +74,10 @@ jobs:
   # step 16 - Configure KeyProperties
       - name: Configure .jks KeyProperties
         run: |
-          echo keyPassword=\${{ secrets.KEY_PASSWORD }} > ${{env.PROPERTIES_PATH}}
-          echo storePassword=\${{ secrets.KEYSTORE_PASSWORD }} >> ${{env.PROPERTIES_PATH}}
-          echo keyAlias=\${{ secrets.KEY_ALIAS }} >> ${{env.PROPERTIES_PATH}}
-          echo storeFile=\${{ steps.android_keystore.outputs.filePath }} > ${{env.PROPERTIES_PATH}}
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> ${{env.PROPERTIES_PATH}}
+          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" >> ${{env.PROPERTIES_PATH}}
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> ${{env.PROPERTIES_PATH}}
+          echo "storeFile=${{ steps.android_keystore.outputs.filePath }}" >> ${{env.PROPERTIES_PATH}}
 
       # step 8 - Build APK file
       - name: Build APK
