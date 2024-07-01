@@ -10,7 +10,7 @@ on:
 #      - development
 
 env:
-  PROPERTIES_PATH: "android/key.properties"
+  PROPERTIES_PATH: "./android/key.properties"
 
 jobs:
   build_and_release:
