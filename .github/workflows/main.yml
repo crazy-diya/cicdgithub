@@ -63,7 +63,23 @@ jobs:
       - name: App Issues Analyzing
         run: flutter analyze
 
-  # step 8 - Build APK file
+  # step 8 - Download android keystore
+      - name: Download android keystore
+        id: android_keystore
+        uses: timheuer/base64-to-file@v1.2
+        with:
+          fileName: 'keystore.jks'
+          encodedString: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+
+  # step 16 - Configure KeyProperties
+      - name: Configure .jks KeyProperties
+        run: |
+          echo keyPassword=\${{ secrets.KEY_PASSWORD }} > ${{env.PROPERTIES_PATH}}
+          echo storePassword=\${{ secrets.KEYSTORE_PASSWORD }} >> ${{env.PROPERTIES_PATH}}
+          echo keyAlias=\${{ secrets.KEY_ALIAS }} >> ${{env.PROPERTIES_PATH}}
+          echo storeFile=\${{ steps.android_keystore.outputs.filePath }} > ${{env.PROPERTIES_PATH}}
+
+      # step 8 - Build APK file
       - name: Build APK
         run: flutter build apk --split-per-abi --release
 
@@ -133,13 +149,5 @@ jobs:
           from: ${{ vars.FROM_NAME }}
           html_body: file://README.md
           convert_markdown: true # Writing format show in mail same as.
-
-  # step 16 - Configure KeyProperties
-      - name: Configure .jks KeyProperties
-        run: |
-          echo keyPassword=\${{ secrets.KEY_PASSWORD }} > ${{env.PROPERTIES_PATH}}
-          echo storePassword=\${{ secrets.KEYSTORE_PASSWORD }} >> ${{env.PROPERTIES_PATH}}
-          echo keyAlias=\${{ secrets.KEY_ALIAS }} >> ${{env.PROPERTIES_PATH}}
-
 
 # Test@1234 - keystore data
