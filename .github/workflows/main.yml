@@ -71,7 +71,7 @@ jobs:
           fileName: 'keystore.jks'
           encodedString: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
 
-  # step 10 - Configure KeyProperties
+  # step 9 - Configure KeyProperties
       - name: Configure .jks KeyProperties
         run: |
           echo keyPassword=${{ secrets.KEY_PASSWORD }} >> ${{env.PROPERTIES_PATH}}
@@ -79,15 +79,15 @@ jobs:
           echo keyAlias=${{ secrets.KEY_ALIAS }} >> ${{env.PROPERTIES_PATH}}
           echo storeFile=${{ steps.android_keystore.outputs.filePath }} >> ${{env.PROPERTIES_PATH}}
 
-  # step 11 - Build APK file
+  # step 10 - Build APK file
       - name: Build APK
         run: flutter build apk --split-per-abi --release
 
-  # step 12 - Build AAB file
+  # step 11 - Build AAB file
       - name: Build AppBundle
         run: flutter build appbundle --split-debug-info --release
 
-  # step 13 - Build IPA file
+  # step 12 - Build IPA file
       - name: Build IPA
         run: flutter build ipa --release --no-codesign
       - name: Compress Archives and IPAs
@@ -95,7 +95,7 @@ jobs:
           cd build
           tar -czf ios_build.tar.gz ios
 
-  # step 14 - Upload Artifact
+  # step 13 - Upload Artifact
       - name: Upload Artifact
         uses: actions/upload-artifact@v4.1.0
         with:
@@ -105,7 +105,7 @@ jobs:
             build/app/outputs/bundle/release/app-release.aab
             build/ios_build.tar.gz
 
-  # step 15 - Retrieve the Current App Version from pubspec.yaml file
+  # step 14 - Retrieve the Current App Version from pubspec.yaml file
       - name: Get App version Number
         id: get_version
         run: echo "VERSION=$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)" >> $GITHUB_OUTPUT
@@ -113,7 +113,7 @@ jobs:
 #          run: |
 #            echo ::set-output name=VERSION::$(grep "version:" pubspec.yaml | awk '{print $2}')
 
-  # step 16 - Create Release with adding app version number to the release repository
+  # step 15 - Create Release with adding app version number to the release repository
       - name: Create Releases with new Release Number
         uses: ncipollo/release-action@v1
         with:
@@ -124,7 +124,7 @@ jobs:
           prerelease: false
           bodyFile: "README.md"
 
-  # step 17 - Upload Artifact to the google Drive
+  # step 16 - Upload Artifact to the google Drive
       - name: Upload Github Artifacts TO Google Drive
         uses: Jumbo810/Upload_Github_Artifacts_TO_GDrive@v2.2.2
         with:
@@ -133,7 +133,7 @@ jobs:
           parent_folder_id: 1XSqWujNJhRqfKBSgh6IfhzuU_1lohshr
           child_folder: v${{ steps.get_version.outputs.VERSION }}
 
-  # step 18 - Send mail to the QA Team
+  # step 17 - Send mail to the QA Team
       - name: Send E-Mail to QA team with release note
         if: always()
         uses: dawidd6/action-send-mail@v3
