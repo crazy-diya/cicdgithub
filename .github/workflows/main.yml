@@ -139,7 +139,7 @@ jobs:
         with:
           serviceAccountJsonPlainText: ${{ secrets.PLAYSTORE_ACCOUNT_KEY }}
           packageName: com.githubcicd.github_cicd
-          releaseFiles: app/build/outputs/bundle/release/app-release.aab
+          releaseFiles: build/app/outputs/bundle/release/app-release.aab
           releaseName: v${{ steps.get_version.outputs.VERSION }}
           track: closed
           status: inProgress
