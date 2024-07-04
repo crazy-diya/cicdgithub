@@ -143,8 +143,8 @@ jobs:
           releaseName: v${{ steps.get_version.outputs.VERSION }}
           track: closed
           status: inProgress
-#          inAppUpdatePriority: 2
-#          userFraction: 0.33
+          inAppUpdatePriority: 2
+          userFraction: 0.33
 #          whatsNewDirectory: distribution/whatsnew
 #          mappingFile: app/build/outputs/mapping/release/mapping.txt
 #          debugSymbols: app/intermediates/merged_native_libs/release/out/lib
