@@ -133,15 +133,15 @@ jobs:
           parent_folder_id: 1XSqWujNJhRqfKBSgh6IfhzuU_1lohshr
           child_folder: v${{ steps.get_version.outputs.VERSION }}
 
-  # step 11 - Release app to the Playstore (Internal Testing)
-      - name: Upload Android Release to Play Store
+  # step 17 - Release app to the Playstore (Close - Alpha Testing)
+      - name: Upload Android Release app to Play Store - (Close - Alpha Testing)
         uses: r0adkll/upload-google-play@v1.1.3
         with:
           serviceAccountJsonPlainText: ${{ secrets.PLAYSTORE_ACCOUNT_KEY }}
           packageName: com.githubcicd.github_cicd
           releaseFiles: build/app/outputs/bundle/release/app-release.aab
           releaseName: v${{ steps.get_version.outputs.VERSION }}
-          track: internal
+          track: alpha
           status: inProgress
           inAppUpdatePriority: 2
           userFraction: 0.33
@@ -149,7 +149,7 @@ jobs:
 #          mappingFile: app/build/outputs/mapping/release/mapping.txt
 #          debugSymbols: app/intermediates/merged_native_libs/release/out/lib
 
-      # step 17 - Send mail to the QA Team
+  # step 18 - Send mail to the QA Team
       - name: Send E-Mail to QA team with release note
         if: always()
         uses: dawidd6/action-send-mail@v3
@@ -165,7 +165,5 @@ jobs:
           from: ${{ vars.FROM_NAME }}
           html_body: file://README.md
           convert_markdown: true # Writing format show in mail same as.
-
-
 
 # Test@1234 - keystore data
