@@ -141,7 +141,7 @@ jobs:
           packageName: com.githubcicd.github_cicd
           releaseFiles: build/app/outputs/bundle/release/app-release.aab
           releaseName: v${{ steps.get_version.outputs.VERSION }}
-          track: closed
+          track: alpha
           status: inProgress
           inAppUpdatePriority: 2
           userFraction: 0.33
